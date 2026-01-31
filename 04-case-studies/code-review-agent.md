@@ -101,6 +101,27 @@ graph TD
 
 ---
 
+## Code Quality Standards
+
+This agent enforces (and follows) these standards:
+
+**Python:**
+
+- Linter: Ruff
+- Formatter: Black
+- Type checker: mypy
+- Config: `pyproject.toml`
+
+**JavaScript/TypeScript:**
+
+- Linter: ESLint
+- Formatter: Prettier
+- Config: `.eslintrc.json`
+
+All code examples in this case study pass the same linting rules the agent enforces.
+
+---
+
 ## Implementation Details
 
 ### 1. Code Extraction & Parsing
@@ -205,15 +226,33 @@ class CodeReviewChain:
 #### Style Checker (Automated)
 
 ```python
+"""Style checking module for code review agent."""
+
+from typing import Dict, List, Any
+import subprocess
+import tempfile
+import os
+import json
+
+
 class StyleChecker:
-    def __init__(self):
-        self.python_linter = "ruff"
-        self.js_linter = "eslint"
+    """Automated style checker using industry-standard linters."""
 
-    async def analyze(self, pr_data):
-        """Run static analysis tools"""
+    def __init__(self) -> None:
+        """Initialize style checker with linter configurations."""
+        self.python_linter: str = "ruff"
+        self.js_linter: str = "eslint"
 
-        issues = []
+    async def analyze(self, pr_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Run static analysis tools on pull request changes.
+
+        Args:
+            pr_data: Pull request data including file changes
+
+        Returns:
+            Dictionary containing issues found and analysis duration
+        """
+        issues: List[Dict[str, Any]] = []
 
         for change in pr_data["changes"]:
             if change["filename"].endswith(".py"):
@@ -226,8 +265,15 @@ class StyleChecker:
             "duration": 1200  # ms
         }
 
-    async def check_python(self, file_change):
-        """Run Ruff linter"""
+    async def check_python(self, file_change: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Run Ruff linter on Python file.
+
+        Args:
+            file_change: File change data with content and metadata
+
+        Returns:
+            List of linting issues found
+        """
 
         # Write temp file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
