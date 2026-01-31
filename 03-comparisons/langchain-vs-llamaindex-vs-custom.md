@@ -479,6 +479,89 @@ def production_agent(query):
 
 ---
 
+## Other Notable Frameworks
+
+While LangChain and LlamaIndex dominate the agent framework space, several other frameworks deserve mention:
+
+### CrewAI
+
+**Language:** Python
+**GitHub:** [joaomdmoura/crewAI](https://github.com/joaomdmoura/crewAI) - 15K+ ⭐
+**Best for:** Role-based multi-agent collaboration
+
+**Key Features:**
+
+- Hierarchical process management
+- Role assignment and task delegation
+- Built-in sequential and parallel execution
+- Production-ready agent orchestration
+
+**When to use:** Team-like agent collaboration with clear roles
+**Comparison to LangChain:** More opinionated, simpler for multi-agent use cases
+
+---
+
+### Vercel AI SDK
+
+**Language:** TypeScript/JavaScript
+**GitHub:** [vercel/ai](https://github.com/vercel/ai) - 8K+ ⭐
+**Best for:** Edge-deployed streaming agents
+
+**Key Features:**
+
+- React Server Components integration
+- Edge runtime optimization
+- Streaming responses
+- UI state management
+
+**When to use:** Next.js/React applications, edge deployment
+**Comparison to LangChain:** Frontend-first, less backend orchestration
+
+---
+
+### Google AI SDK (Gemini)
+
+**Language:** Python, JavaScript, others
+**Docs:** [ai.google.dev](https://ai.google.dev/)
+**Best for:** Gemini-first applications, multi-modal agents
+
+**Key Features:**
+
+- Native Gemini integration
+- Function calling
+- Multi-modal support (text, image, audio)
+- 1M+ token context window
+
+**When to use:** Committed to Google ecosystem, need massive context
+**Comparison to LangChain:** Vendor-specific but deeply integrated
+
+---
+
+### Quick Comparison
+
+| Framework         | Focus                 | Multi-Agent         | Edge Support | Best For                       |
+| ----------------- | --------------------- | ------------------- | ------------ | ------------------------------ |
+| **LangChain**     | General orchestration | ✅ (with LangGraph) | ⚠️           | Backend-heavy, Python teams    |
+| **LlamaIndex**    | RAG/retrieval         | ❌                  | ❌           | Document-heavy workflows       |
+| **CrewAI**        | Multi-agent           | ✅                  | ❌           | Team-based collaboration       |
+| **Vercel AI SDK** | Frontend integration  | ⚠️                  | ✅           | React/Next.js apps             |
+| **Google AI SDK** | Gemini ecosystem      | ❌                  | ⚠️           | Google Cloud users             |
+| **Custom**        | Full control          | ✅                  | ✅           | Production scale, unique needs |
+
+---
+
+### Additional Frameworks Worth Exploring
+
+- **Semantic Kernel** (Microsoft) - Enterprise .NET integration
+- **AutoGen** (Microsoft) - Conversational multi-agent
+- **Haystack** - Production NLP pipelines with LLMs
+- **DSPy** - Programming (not prompting) LLMs
+- **Marvin** - Python-first AI engineering
+
+See [Tools & Frameworks](../05-resources/tools-and-frameworks.md) for detailed comparisons.
+
+---
+
 ## Common Pitfalls
 
 ### 1. Over-Engineering with Frameworks
