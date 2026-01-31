@@ -104,7 +104,7 @@ pip install pyautogen
 
 **Language:** Python
 **GitHub:** [joaomdmoura/crewAI](https://github.com/joaomdmoura/crewAI) - 15K+ ⭐
-**Best for:** Role-based multi-agent systems
+**Best for:** Role-based multi-agent systems, hierarchical task delegation
 
 **Key Features:**
 
@@ -120,6 +120,32 @@ pip install crewai
 ```
 
 **When to use:** Team-like agent collaboration, clear role separation
+
+---
+
+### Vercel AI SDK
+
+**Language:** TypeScript/JavaScript
+**GitHub:** [vercel/ai](https://github.com/vercel/ai) - 8K+ ⭐
+**Best for:** Edge-deployed streaming agents, React/Next.js integration
+
+**Key Features:**
+
+- React Server Components integration
+- Edge runtime optimization
+- Streaming responses with UI state
+- Built-in function calling
+- OpenAI, Anthropic, Mistral support
+
+**Installation:**
+
+```bash
+npm install ai
+```
+
+**When to use:** Frontend-first applications, Next.js/React apps, edge deployment
+
+**When to avoid:** Backend-heavy orchestration, Python-based teams
 
 ---
 
@@ -196,6 +222,12 @@ pip install google-generativeai
 ```
 
 **Key Feature:** 1M+ context window, lowest cost
+
+**Additional Resources:**
+
+- **Docs:** [ai.google.dev](https://ai.google.dev/)
+- **Agent support:** Native function calling, multi-modal agents
+- **Best for:** Gemini-first applications, massive context needs, multi-modal workflows
 
 ---
 
@@ -383,6 +415,112 @@ CREATE EXTENSION vector;
 - Rate limiting
 
 **When to use:** Production monitoring, cost control
+
+---
+
+### Langfuse
+
+**Purpose:** Open-source LLM observability & analytics
+**Pricing:** Open-source (self-host) or cloud ($49+/mo)
+**GitHub:** [langfuse/langfuse](https://github.com/langfuse/langfuse)
+
+**Features:**
+
+- Framework-agnostic tracing (LangChain, LlamaIndex, custom)
+- Detailed cost analytics per user/session/prompt
+- Prompt versioning and management
+- A/B testing for prompts
+- LLM playground for testing
+- Evaluation datasets
+- Production monitoring dashboards
+- Self-hosting option for data privacy
+
+**Installation:**
+
+```bash
+pip install langfuse
+```
+
+**Integration:**
+
+```python
+from langfuse import Langfuse
+
+langfuse = Langfuse(
+    public_key="pk-...",
+    secret_key="sk-..."
+)
+
+# Manual tracing
+trace = langfuse.trace(name="agent-query", user_id="user123")
+span = trace.span(name="llm-call")
+
+response = llm.generate(prompt)
+
+span.end(output=response, metadata={"cost": 0.0045})
+trace.end()
+```
+
+**When to use:**
+
+- Framework-agnostic observability needed
+- Detailed cost tracking per user/session required
+- Want self-hosting option for data privacy
+- Need prompt versioning and A/B testing
+- Team collaboration on prompt optimization
+
+**Comparison to LangSmith:** More flexible (works with any framework), open-source option, stronger cost analytics
+
+---
+
+### Arize AI
+
+**Purpose:** Production ML monitoring for LLMs
+**Pricing:** Custom (enterprise)
+**Website:** [arize.com](https://arize.com/)
+
+**Features:**
+
+- LLM performance monitoring
+- Embedding drift detection
+- Model comparison across deployments
+- Hallucination detection
+- Prompt template monitoring
+- Automated alerting on quality degradation
+- Integration with existing ML monitoring
+- Root cause analysis
+
+**Integration:**
+
+```python
+from arize.pandas.logger import Client
+from arize.utils.types import ModelTypes
+
+arize_client = Client(
+    api_key="...",
+    space_key="..."
+)
+
+# Log predictions
+response = arize_client.log(
+    model_id="llm-agent",
+    model_version="v1",
+    model_type=ModelTypes.GENERATIVE_LLM,
+    prediction_label=llm_output,
+    actual_label=ground_truth,  # if available
+    embedding_features={"prompt_embedding": embedding}
+)
+```
+
+**When to use:**
+
+- Enterprise ML operations
+- Need comprehensive production monitoring
+- Detecting embedding/prompt drift over time
+- Combining LLM + traditional ML monitoring
+- Large-scale deployments (>100K requests/day)
+
+**Comparison to other tools:** Enterprise-focused, stronger drift detection, higher cost
 
 ---
 
