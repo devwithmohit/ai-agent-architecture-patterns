@@ -44,6 +44,211 @@
 
 ---
 
+## Specialized LLM Observability Platforms
+
+Before building custom observability from scratch, consider these production-ready platforms designed specifically for LLM applications:
+
+### LangSmith (LangChain)
+
+**Pricing:** Free tier, $39+/mo
+**Best for:** LangChain users, prompt versioning
+
+**Features:**
+
+- Automatic trace capture for LangChain agents
+- Prompt playground and versioning
+- Dataset management for testing
+- Production monitoring dashboards
+- Team collaboration
+
+**Setup:**
+
+```python
+import os
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_API_KEY"] = "your-api-key"
+
+# Traces automatically captured
+from langchain.chat_models import ChatOpenAI
+llm = ChatOpenAI()
+```
+
+**When to use:** Already using LangChain, need zero-setup observability
+
+---
+
+### Langfuse
+
+**Pricing:** Open-source (self-host) or cloud ($49+/mo)
+**Best for:** Framework-agnostic observability, cost tracking
+
+**Features:**
+
+- Framework-agnostic (works with any LLM SDK)
+- Detailed cost analytics per user/session
+- Prompt versioning and A/B testing
+- LLM playground
+- Open-source (can self-host)
+
+**Setup:**
+
+```python
+from langfuse import Langfuse
+
+langfuse = Langfuse(
+  public_key="pk-...",
+  secret_key="sk-..."
+)
+
+# Manual tracing
+trace = langfuse.trace(name="agent-query")
+span = trace.span(name="llm-call")
+
+response = llm.generate(prompt)
+
+span.end(output=response)
+trace.end()
+```
+
+**When to use:** Need cost tracking, want self-hosting option, framework flexibility
+
+---
+
+### Arize AI
+
+**Pricing:** Custom (enterprise)
+**Best for:** Production ML monitoring, LLM + traditional ML
+
+**Features:**
+
+- LLM performance monitoring
+- Embedding drift detection
+- Model comparison across deployments
+- Alerting on quality degradation
+- Integrates with existing ML monitoring
+
+**Setup:**
+
+```python
+from arize.pandas.logger import Client
+from arize.utils.types import ModelTypes
+
+arize_client = Client(api_key="...", space_key="...")
+
+# Log predictions
+arize_client.log(
+    model_id="llm-agent",
+    model_version="v1",
+    model_type=ModelTypes.GENERATIVE_LLM,
+    prediction_label=llm_output,
+    actual_label=ground_truth  # if available
+)
+```
+
+**When to use:** Enterprise ML operations, need comprehensive monitoring
+
+---
+
+### Weights & Biases (W&B)
+
+**Pricing:** Free (individuals), $50+/mo (teams)
+**Best for:** Experiment tracking, prompt optimization
+
+**Features:**
+
+- Prompt experiment tracking
+- A/B test comparison
+- Token usage analytics
+- Team collaboration
+- Integration with training workflows
+
+**Setup:**
+
+```python
+import wandb
+
+wandb.init(project="llm-agents")
+
+# Log LLM calls
+wandb.log({
+    "prompt_tokens": 150,
+    "completion_tokens": 75,
+    "cost": 0.0045,
+    "latency_ms": 1200
+})
+```
+
+**When to use:** Optimizing prompts, A/B testing, research teams
+
+---
+
+### Helicone
+
+**Pricing:** Free (1K req/mo), $20+/mo
+**Best for:** Simple proxy-based monitoring
+
+**Features:**
+
+- Zero-code integration (proxy)
+- Request/response logging
+- Cost tracking
+- Caching layer (bonus feature)
+- Rate limiting
+
+**Setup:**
+
+```python
+import openai
+
+openai.api_base = "https://oai.hconeai.com/v1"
+openai.default_headers = {
+    "Helicone-Auth": "Bearer <API_KEY>"
+}
+
+# All calls automatically logged
+response = openai.ChatCompletion.create(...)
+```
+
+**When to use:** Minimal setup, proxy approach acceptable
+
+---
+
+### Comparison Matrix
+
+| Platform      | Best For              | Self-Host | Cost Tracking | Prompt Mgmt | Framework Support |
+| ------------- | --------------------- | --------- | ------------- | ----------- | ----------------- |
+| **LangSmith** | LangChain users       | ❌        | ✅            | ✅          | LangChain-native  |
+| **Langfuse**  | Framework flexibility | ✅        | ✅            | ✅          | All frameworks    |
+| **Arize**     | Enterprise ML ops     | ❌        | ✅            | ⚠️          | All frameworks    |
+| **W&B**       | Experimentation       | ❌        | ✅            | ✅          | All frameworks    |
+| **Helicone**  | Zero-code proxy       | ❌        | ✅            | ❌          | OpenAI, Anthropic |
+
+---
+
+### When to Build Custom vs. Use Platform
+
+**Use specialized platform if:**
+
+- ✅ Standard use cases (most teams)
+- ✅ Want quick setup (<1 hour)
+- ✅ Cost tracking is priority
+- ✅ Team collaboration needed
+
+**Build custom if:**
+
+- ⚠️ Unique compliance requirements
+- ⚠️ Platform doesn't support your stack
+- ⚠️ High-scale cost sensitivity (observability $$ adds up)
+- ⚠️ Need deep integration with existing systems
+
+---
+
+## Custom Observability Implementation
+
+_If you need custom solutions:_
+
+---
+
 ## Logging Best Practices
 
 ### Structured Logging
