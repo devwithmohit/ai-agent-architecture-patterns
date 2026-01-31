@@ -684,6 +684,216 @@ response = arize_client.log(
 
 ---
 
+## ⚠️ Deprecated Technologies
+
+> Historical approaches documented for teams migrating away from them
+
+### OpenAI Assistants API
+
+**Status:** 🚫 **Deprecated (Sunset: July 2026)**
+**Replacement:** Custom agents with Chat Completions API + LangGraph
+
+**Why deprecated:**
+
+- Limited customization and control
+- Opaque pricing (hidden token multipliers)
+- Vendor lock-in to OpenAI ecosystem
+- Poor observability and debugging
+
+**Migration path:**
+
+1. Audit current Assistants API usage and costs
+2. Implement equivalent logic with Chat Completions + function calling
+3. Use LangGraph for stateful workflows (replaces threads)
+4. Migrate file storage to your own system (S3, GCS, etc.)
+5. Implement custom memory management
+
+**Resources:**
+
+- [Migration guide](../03-comparisons/openai-assistants-vs-custom-agents.md)
+- [LangGraph documentation](https://langchain-ai.github.io/langgraph/)
+
+---
+
+### GPT-3.5-turbo (legacy versions)
+
+**Status:** ⚠️ **Legacy (use GPT-4o-mini instead)**
+**Replacement:** GPT-4o-mini (faster, cheaper, smarter)
+
+**Why legacy:**
+
+- GPT-4o-mini outperforms at lower cost
+- Better function calling reliability
+- Faster response times
+- More recent training data
+
+**Migration:** Simple drop-in replacement
+
+```python
+# BEFORE
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",  # Legacy
+    messages=messages
+)
+
+# AFTER
+response = client.chat.completions.create(
+    model="gpt-4o-mini",  # Recommended
+    messages=messages
+)
+```
+
+---
+
+### LangChain Agents (Pre-0.1.0)
+
+**Status:** ⚠️ **Legacy API (use LangGraph instead)**
+**Replacement:** LangGraph for stateful agents
+
+**Why deprecated:**
+
+- Limited state management
+- Difficult debugging
+- Less control over execution flow
+- No built-in persistence
+
+**Migration path:**
+
+- **Simple agents:** Migrate to LangGraph's ReAct pattern
+- **Complex workflows:** Use LangGraph's graph-based orchestration
+- **Stateful agents:** LangGraph provides built-in checkpointing
+
+**Resources:**
+
+- [LangGraph migration guide](https://python.langchain.com/docs/langgraph)
+
+---
+
+### Pinecone Starter Plan (Legacy)
+
+**Status:** ⚠️ **Legacy tier**
+**Replacement:** Pinecone Serverless (2024+)
+
+**Why legacy:**
+
+- Pod-based architecture more expensive
+- Manual scaling required
+- Higher latency
+- No auto-scaling
+
+**Migration:** Pinecone provides automatic migration tools
+
+---
+
+### OpenAI Fine-tuning for Agents
+
+**Status:** ⚠️ **Not recommended for most use cases**
+**Replacement:** Prompt engineering + RAG + few-shot examples
+
+**Why not recommended:**
+
+- High cost ($10-100+ per fine-tune)
+- Maintenance burden (model drift)
+- Prompt engineering often sufficient
+- GPT-4 class models rarely need fine-tuning
+
+**When fine-tuning still makes sense:**
+
+- Highly specialized domain language
+- Extremely cost-sensitive (many millions of calls)
+- Consistent output format requirements
+
+**Better alternatives:**
+
+1. Prompt engineering with examples
+2. RAG for knowledge augmentation
+3. Structured output with Pydantic/JSON mode
+4. Chain-of-thought prompting
+
+---
+
+### Langchain.agents.AgentExecutor (Legacy)
+
+**Status:** ⚠️ **Maintenance mode**
+**Replacement:** LangGraph or custom orchestration
+
+**Why maintenance mode:**
+
+- Poor error handling
+- Limited observability
+- Difficult to debug
+- No built-in state management
+
+**Migration example:**
+
+```python
+# LEGACY (AgentExecutor)
+from langchain.agents import create_react_agent, AgentExecutor
+
+agent = create_react_agent(llm, tools, prompt)
+executor = AgentExecutor(agent=agent, tools=tools)
+result = executor.invoke({"input": query})
+
+# RECOMMENDED (LangGraph)
+from langgraph.prebuilt import create_react_agent
+
+agent = create_react_agent(llm, tools)
+result = agent.invoke({"messages": [("user", query)]})
+```
+
+---
+
+### Vector DB Self-Hosting for Small Projects
+
+**Status:** ⚠️ **Overkill for most MVPs**
+**Replacement:** Managed services (Pinecone, Weaviate Cloud)
+
+**Why not recommended for small teams:**
+
+- Operational complexity
+- Scaling challenges
+- Monitoring and maintenance
+- Security patching
+
+**When self-hosting makes sense:**
+
+- > 10M vectors
+- Strict data residency requirements
+- High query volume (>1000 QPS)
+- Team has dedicated infrastructure expertise
+
+**For MVPs:** Use managed services, migrate to self-hosted later if needed
+
+---
+
+## 📊 Technology Lifecycle
+
+| Technology                  | Status             | Timeline         | Action                 |
+| --------------------------- | ------------------ | ---------------- | ---------------------- |
+| **OpenAI Assistants API**   | 🚫 Deprecated      | Sunset July 2026 | Migrate ASAP           |
+| **GPT-3.5-turbo**           | ⚠️ Legacy          | Still supported  | Consider upgrade       |
+| **LangChain AgentExecutor** | ⚠️ Maintenance     | Ongoing support  | Plan migration         |
+| **Pinecone Pods**           | ⚠️ Legacy tier     | Still supported  | Migrate to Serverless  |
+| **Fine-tuning for agents**  | ⚠️ Not recommended | N/A              | Use prompt engineering |
+
+---
+
+## Migration Support
+
+**Resources:**
+
+- [OpenAI Assistants → Custom migration](../03-comparisons/openai-assistants-vs-custom-agents.md)
+- [LangChain → LangGraph migration](https://python.langchain.com/docs/langgraph)
+- [Framework comparison](../03-comparisons/langchain-vs-llamaindex-vs-custom.md)
+
+**Community:**
+
+- Discord: Ask in `#migrations` channels
+- GitHub Discussions: Search for migration issues
+- Professional services: Most framework vendors offer migration help
+
+---
+
 ## Contributing
 
 Suggest a tool? Requirements:
